@@ -96,7 +96,7 @@ export default function useCustomScroller(
       const { clientHeight, scrollHeight, trackHeight } = memoizedProps.current;
       const ratio = el.scrollTop / (scrollHeight - clientHeight);
       const yo = ratio * (clientHeight - trackHeight);
-      const y = yo < 42 ? 42 : yo > clientHeight - 20 ? 20 : yo;
+      const y = yo < 42 ? 42 : yo > trackHeight - 20 ? 20 : yo;
       track.style.transform = `translateY(${y}px)`;
     });
   }, [scrollerRef, scrollRatio]);
