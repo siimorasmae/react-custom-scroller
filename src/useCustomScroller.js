@@ -40,6 +40,7 @@ export default function useCustomScroller(
 ) {
   const [scrollRatio, setScrollRatio] = useState(1);
   const [isDraggingTrack, setIsDraggingTrack] = useState(false);
+  const [hasInteracted, setHasInteracted] = useState(false);
 
   const ref = useRef();
   const scrollerRef = customRef || ref;
@@ -47,15 +48,16 @@ export default function useCustomScroller(
   const trackAnimationRef = useRef();
   const memoizedProps = useRef({});
 
-  useLayoutEffect(() => {
-    const el = scrollerRef.current;
-    let scrollbarAnimation;
+  let updateScrollbar;
+  let scrollbarAnimation;
 
-    const updateScrollbar = () => {
+  useLayoutEffect(() => {
+    updateScrollbar = () => {
       cancelAnimationFrame(scrollbarAnimation);
       scrollbarAnimation = requestAnimationFrame(() => {
-        const { clientHeight, scrollHeight } = el;
-        setScrollRatio(clientHeight / scrollHeight);
+        const { clientHeight, scrollHeight } = scrollerRef.current;
+        const ratio = clientHeight / scrollHeight;
+        setScrollRatio(isNaN(ratio) ? 1 : ratio);
         memoizedProps.current = {
           clientHeight,
           scrollHeight,
@@ -86,6 +88,10 @@ export default function useCustomScroller(
   }, [scrollerRef, disabled]);
 
   const onScroll = useCallback(() => {
+    if (!hasInteracted) {
+      updateScrollbar();
+      setHasInteracted(true);
+    }
     if (scrollRatio === 1) return;
     const el = scrollerRef.current;
     const track = trackRef.current;
