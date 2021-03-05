@@ -95,7 +95,8 @@ export default function useCustomScroller(
     trackAnimationRef.current = requestAnimationFrame(() => {
       const { clientHeight, scrollHeight, trackHeight } = memoizedProps.current;
       const ratio = el.scrollTop / (scrollHeight - clientHeight);
-      const y = ratio * (clientHeight - trackHeight);
+      const yo = ratio * (clientHeight - trackHeight);
+      const y = yo < 42 ? 42 : yo > clientHeight - 20 ? 20 : yo;
       track.style.transform = `translateY(${y}px)`;
     });
   }, [scrollerRef, scrollRatio]);
@@ -150,8 +151,6 @@ export default function useCustomScroller(
     ref: trackRef,
     onMouseDown: disabled ? undefined : moveTrack,
     style: {
-      right: isDraggingTrack ? 1 : undefined,
-      width: isDraggingTrack ? 10 : undefined,
       height: `${scrollRatio * 100}%`,
       opacity: isDraggingTrack ? 1 : undefined,
       display: disabled || scrollRatio === 1 ? 'none' : undefined,
