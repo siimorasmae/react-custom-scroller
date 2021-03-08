@@ -48,7 +48,7 @@ export default function useCustomScroller(
   const trackAnimationRef = useRef();
   const memoizedProps = useRef({});
 
-  let updateScrollbar;
+  let updateScrollbar = () => {};
   let scrollbarAnimation;
 
   useLayoutEffect(() => {
